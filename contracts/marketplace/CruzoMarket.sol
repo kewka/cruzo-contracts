@@ -21,6 +21,7 @@ contract CruzoMarket is ERC1155Holder, Ownable, ReentrancyGuard {
         uint256 tokenId,
         address seller,
         address buyer,
+        address recipient,
         uint256 amount
     );
 
@@ -80,6 +81,7 @@ contract CruzoMarket is ERC1155Holder, Ownable, ReentrancyGuard {
         address _tokenAddress,
         uint256 _tokenId,
         address _seller,
+        address _recipient,
         uint256 _amount
     ) external payable nonReentrant {
         require(
@@ -96,7 +98,7 @@ contract CruzoMarket is ERC1155Holder, Ownable, ReentrancyGuard {
         trade.amount -= _amount;
         IERC1155(_tokenAddress).safeTransferFrom(
             address(this),
-            msg.sender,
+            _recipient,
             _tokenId,
             _amount,
             ""
@@ -110,6 +112,7 @@ contract CruzoMarket is ERC1155Holder, Ownable, ReentrancyGuard {
             _tokenId,
             _seller,
             msg.sender,
+            _recipient,
             _amount
         );
     }

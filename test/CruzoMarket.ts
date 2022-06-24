@@ -12,12 +12,13 @@ describe("CruzoMarket", () => {
   let owner: SignerWithAddress;
   let seller: SignerWithAddress;
   let buyer: SignerWithAddress;
+  let recipient: SignerWithAddress;
 
   const serviceFee = 300;
   const serviceFeeBase = 10000;
 
   beforeEach(async () => {
-    [owner, seller, buyer] = await ethers.getSigners();
+    [owner, seller, buyer, recipient] = await ethers.getSigners();
 
     const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
@@ -169,6 +170,7 @@ describe("CruzoMarket", () => {
             token.address,
             tokenId,
             seller.address,
+            buyer.address,
             purchaseAmount,
             {
               value: purchaseValue,
@@ -180,6 +182,7 @@ describe("CruzoMarket", () => {
           token.address,
           tokenId,
           seller.address,
+          buyer.address,
           buyer.address,
           purchaseAmount
         );
@@ -196,6 +199,51 @@ describe("CruzoMarket", () => {
       expect(await ethers.provider.getBalance(market.address)).eq(
         serviceFeeValue
       );
+    });
+
+    it("Should Execute Trade (Gift)", async () => {
+      const tokenId = ethers.BigNumber.from("1");
+      const supply = ethers.BigNumber.from("100");
+      const tradeAmount = ethers.BigNumber.from("10");
+      const price = ethers.utils.parseEther("0.01");
+      const purchaseAmount = ethers.BigNumber.from("5");
+      const purchaseValue = price.mul(purchaseAmount);
+
+      expect(
+        await token.connect(seller).create(supply, seller.address, "", [])
+      );
+
+      expect(
+        await market
+          .connect(seller)
+          .openTrade(token.address, tokenId, tradeAmount, price)
+      );
+
+      await expect(
+        market
+          .connect(buyer)
+          .executeTrade(
+            token.address,
+            tokenId,
+            seller.address,
+            recipient.address,
+            purchaseAmount,
+            {
+              value: purchaseValue,
+            }
+          )
+      )
+        .emit(market, "TradeExecuted")
+        .withArgs(
+          token.address,
+          tokenId,
+          seller.address,
+          buyer.address,
+          recipient.address,
+          purchaseAmount
+        );
+
+      expect(await token.balanceOf(recipient.address, tokenId)).eq(purchaseAmount);
     });
 
     it("Trade cannot be executed by the seller", async () => {
@@ -217,7 +265,13 @@ describe("CruzoMarket", () => {
       await expect(
         market
           .connect(seller)
-          .executeTrade(token.address, tokenId, seller.address, tradeAmount)
+          .executeTrade(
+            token.address,
+            tokenId,
+            seller.address,
+            buyer.address,
+            tradeAmount
+          )
       ).revertedWith("Trade cannot be executed by the seller");
     });
 
@@ -240,7 +294,13 @@ describe("CruzoMarket", () => {
       await expect(
         market
           .connect(buyer)
-          .executeTrade(token.address, tokenId, seller.address, "0")
+          .executeTrade(
+            token.address,
+            tokenId,
+            seller.address,
+            buyer.address,
+            "0"
+          )
       ).revertedWith("Amount must be greater than 0");
     });
 
@@ -267,6 +327,7 @@ describe("CruzoMarket", () => {
             token.address,
             tokenId,
             seller.address,
+            buyer.address,
             tradeAmount.add("1")
           )
       ).revertedWith("Not enough items in trade");
@@ -291,9 +352,16 @@ describe("CruzoMarket", () => {
       await expect(
         market
           .connect(buyer)
-          .executeTrade(token.address, tokenId, seller.address, tradeAmount, {
-            value: 0,
-          })
+          .executeTrade(
+            token.address,
+            tokenId,
+            seller.address,
+            buyer.address,
+            tradeAmount,
+            {
+              value: 0,
+            }
+          )
       ).revertedWith("Ether value sent is incorrect");
     });
 
@@ -321,15 +389,18 @@ describe("CruzoMarket", () => {
       expect(await contractSeller.openTrade(tokenId, tradeAmount, price));
 
       await expect(
-        market.executeTrade(
-          token.address,
-          tokenId,
-          contractSeller.address,
-          purchaseAmount,
-          {
-            value: price.mul(purchaseAmount),
-          }
-        )
+        market
+          .connect(buyer)
+          .executeTrade(
+            token.address,
+            tokenId,
+            contractSeller.address,
+            buyer.address,
+            purchaseAmount,
+            {
+              value: price.mul(purchaseAmount),
+            }
+          )
       ).revertedWith(
         "Address: unable to send value, recipient may have reverted"
       );
@@ -429,19 +500,20 @@ describe("CruzoMarket", () => {
           .openTrade(token.address, tokenId, tradeAmount, price)
       );
 
-      await expect(
-        market
+      expect(
+        await market
           .connect(buyer)
           .executeTrade(
             token.address,
             tokenId,
             seller.address,
+            buyer.address,
             purchaseAmount,
             {
               value: purchaseValue,
             }
           )
-      ).emit(market, "TradeExecuted");
+      );
 
       expect(await ethers.provider.getBalance(market.address)).eq(
         serviceFeeValue
