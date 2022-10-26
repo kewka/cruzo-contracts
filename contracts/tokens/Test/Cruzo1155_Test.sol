@@ -110,7 +110,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
         address _royaltyReceiver,
         uint96 _royaltyFee
     ) public returns (uint256 tokenId) {
-        require(publiclyMintable, "Cruzo1155: not public mintable");
+        require(publiclyMintable, "Cruzo1155: not publicly mintable");
         tokenId = _createToken(_tokenId, _amount, _to, _uri, _data);
         _setTokenRoyalty(_tokenId, _royaltyReceiver, _royaltyFee);
         return _tokenId;
