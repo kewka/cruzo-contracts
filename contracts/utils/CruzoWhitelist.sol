@@ -16,7 +16,7 @@ contract CruzoWhitelist is Ownable, ERC1155Holder {
 
     mapping(address => uint256) allocation;
 
-    event BuyCommitted(address, uint256);
+    event BuyCommitted(address, uint256, uint256[]);
 
     constructor(
         bytes32 _merkleRootInitHash,
