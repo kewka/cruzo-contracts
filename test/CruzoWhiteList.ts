@@ -52,7 +52,8 @@ describe("Whitelist", () => {
             .create(
                 tokenDetails.name,
                 tokenDetails.symbol,
-                tokenDetails.collectionURI
+                tokenDetails.collectionURI,
+                true
             );
         const createTokenReceipt = await createTokenTx.wait();
         const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
@@ -131,6 +132,11 @@ describe("Whitelist", () => {
             await expect(whitelist.connect(in1).buy(proof_in1, 1, {value : parseEther("0.5")})).to.be.revertedWith("WhiteList: To much NFT's in one hand");
             await expect(whitelist.connect(in2).buy(proof_in2, 1, {value : parseEther("0.4")})).to.be.revertedWith("Whitelist: incorrect sent value");
             await expect(whitelist.connect(in3).buy(proof_in3, 2, {value : parseEther("1")})).to.be.revertedWith("Whitelist: Not enough supply")
+
+            await expect(whitelist.connect(in2).withdraw(in2.address)).to.be.revertedWith("Ownable: caller is not the owner")
+            const balanceBefore = await creator.getBalance()
+            await whitelist.connect(creator).withdraw(creator.address)
+            expect(await creator.getBalance()).gt(balanceBefore)
         });
     });
 });
