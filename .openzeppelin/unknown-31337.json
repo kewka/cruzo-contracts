@@ -1785,7 +1785,7 @@
             "src": "contracts/tokens/Test/Cruzo1155_Test.sol:21"
           },
           {
-            "label": "publicMintable",
+            "label": "publiclyMintable",
             "offset": 0,
             "slot": "361",
             "type": "t_bool",
@@ -2291,7 +2291,7 @@
             "src": "contracts/tokens/Cruzo1155.sol:21"
           },
           {
-            "label": "publicMintable",
+            "label": "publiclyMintable",
             "offset": 0,
             "slot": "361",
             "type": "t_bool",

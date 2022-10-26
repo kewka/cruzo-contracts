@@ -20,7 +20,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
     RoyaltyInfo private _defaultRoyaltyInfo;
     mapping(uint256 => RoyaltyInfo) private _tokenRoyaltyInfo;
 
-    bool public publicMintable;
+    bool public publiclyMintable;
 
     function initialize(
         string[2] calldata _nameAndShortName,
@@ -28,7 +28,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
         string memory _contractURI,
         address _marketAddress,
         address owner,
-        bool _publicMintable
+        bool _publiclyMintable
     ) public initializer {
         __Ownable_init();
         __Context_init();
@@ -42,7 +42,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
         contractURI = _contractURI;
         setURIType(1);
         _transferOwnership(owner);
-        publicMintable = _publicMintable;
+        publiclyMintable = _publiclyMintable;
     }
 
     function setMarketAddress(address _new) public onlyOwner {
@@ -110,7 +110,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
         address _royaltyReceiver,
         uint96 _royaltyFee
     ) public returns (uint256 tokenId) {
-        require(publicMintable, "Cruzo1155: not public mintable");
+        require(publiclyMintable, "Cruzo1155: not public mintable");
         tokenId = _createToken(_tokenId, _amount, _to, _uri, _data);
         _setTokenRoyalty(_tokenId, _royaltyReceiver, _royaltyFee);
         return _tokenId;
@@ -131,7 +131,7 @@ contract Cruzo1155_v2 is Initializable, IERC2981Upgradeable, ERC1155URI {
         address _to,
         bytes memory _data
     ) public onlyCreator(_tokenId) returns (uint256) {
-        require(publicMintable, "");
+        require(publiclyMintable, "");
         require(
             creators[_tokenId] != address(0),
             "token doesn't exist; try using `mintNewTo()`"

@@ -31,7 +31,7 @@ contract Cruzo1155Factory is Context, Ownable {
         string calldata _name,
         string calldata _symbol,
         string calldata _contractURI,
-        bool _publicMintable
+        bool _publiclyMintable
     ) external {
         BeaconProxy proxy = new BeaconProxy(
             address(beacon),
@@ -42,7 +42,7 @@ contract Cruzo1155Factory is Context, Ownable {
                 _contractURI,
                 marketAddress,
                 _msgSender(),
-                _publicMintable
+                _publiclyMintable
             )
         );
         emit NewTokenCreated(address(proxy), _msgSender());

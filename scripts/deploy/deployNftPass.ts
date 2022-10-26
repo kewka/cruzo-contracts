@@ -4,12 +4,12 @@ import { deployToken } from "../../utils/deployToken";
 async function main() {
   await deployToken(
     {
-      name: "Cruzo",
-      symbol: "CRZ",
+      name: "Cruzo Pass",
+      symbol: "CRZP",
       contractURI: "https://cruzo.cards/contract-metadata",
-      publiclyMintable: true,
+      publiclyMintable: false,
     },
-    ContractType.token
+    ContractType.whitelistToken
   );
 }
 

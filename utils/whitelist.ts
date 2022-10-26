@@ -17,7 +17,7 @@ async function getWLAddresses(fileName: string) {
 
 export async function generateMerkleTree() {
   const wl = await getWLAddresses(wlAddressesFilename);
-  if(wl.len() == 0){
+  if (!wl || wl.length == 0) {
     throw "Length of white list is zero, terminating";
   }
   const { keccak256 } = ethers.utils;

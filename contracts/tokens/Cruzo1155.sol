@@ -20,7 +20,7 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
     RoyaltyInfo private _defaultRoyaltyInfo;
     mapping(uint256 => RoyaltyInfo) private _tokenRoyaltyInfo;
 
-    bool public publicMintable;
+    bool public publiclyMintable;
 
     function initialize(
         string[2] calldata _nameAndShortName,
@@ -28,7 +28,7 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
         string calldata _contractURI,
         address _marketAddress,
         address owner,
-        bool _publicMintable
+        bool _publiclyMintable
     ) public initializer {
         __Ownable_init();
         __Context_init();
@@ -42,7 +42,7 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
         contractURI = _contractURI;
         setURIType(1);
         _transferOwnership(owner);
-        publicMintable = _publicMintable;
+        publiclyMintable = _publiclyMintable;
     }
 
     function setMarketAddress(address _new) public onlyOwner {
@@ -111,8 +111,8 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
         uint96 _royaltyFee
     ) public returns (uint256 tokenId) {
         require(
-            publicMintable || _msgSender() == owner(),
-            "Cruzo1155: not public mintable"
+            publiclyMintable || _msgSender() == owner(),
+            "Cruzo1155: not publicly mintable"
         );
         tokenId = _createToken(_tokenId, _amount, _to, _uri, _data);
         _setTokenRoyalty(_tokenId, _royaltyReceiver, _royaltyFee);
@@ -121,7 +121,7 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
 
     /**
      *
-     * @notice Mint a specific token to `_to` address in `_amount` quantiy
+     * @notice Mint a specific token to `_to` address in `_amount` quantity
      * @param _tokenId The token ID to be minted
      * @param _amount - The amount of tokens to be minted
      * @param _to - The to address to which the token is to be minted

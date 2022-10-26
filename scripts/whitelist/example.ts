@@ -2,10 +2,11 @@ import { generateMerkleTree, generateProof } from "../../utils/whitelist";
 
 async function main() {
   const merkleTree = await generateMerkleTree();
-  console.log(merkleTree);
-  console.log(merkleTree.getHexRoot());
+  console.log("Merkle Tree : ", merkleTree);
+  console.log("Merkle Tree Root : ", merkleTree.getHexRoot());
   console.log(
-    await generateProof("0xE5f4497749861C9255264bA01DA8B16F6dF75b26")
+    "Proof : ",
+    await generateProof("0x10bD96741BE46af260Aa9Fa861081D5445B94f04")
   );
 }
 
