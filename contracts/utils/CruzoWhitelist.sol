@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
 
-contract CruzoWhiteList is Ownable, ERC1155Holder {
+contract CruzoWhitelist is Ownable, ERC1155Holder {
     bytes32 public merkleRoot;
     uint256 public currentId;
     uint256 public endId;
@@ -14,7 +14,7 @@ contract CruzoWhiteList is Ownable, ERC1155Holder {
     uint256 public price;
     uint256 public allowedPerPerson;
 
-    mapping(address => uint256) restriction;
+    mapping(address => uint256) allocation;
 
     event BuyCommitted(address, uint256);
 
@@ -52,15 +52,15 @@ contract CruzoWhiteList is Ownable, ERC1155Holder {
         payable
     {
         require(
-            _amount + restriction[msg.sender] <= allowedPerPerson,
-            "WhiteList: To much NFT's in one hand"
+            _amount + allocation[msg.sender] <= allowedPerPerson,
+            "Whitelist: too many NFT passes in one hand"
         );
         require(verifyAddress(_merkleProof), "Whitelist: invalid proof");
         require(
             msg.value == _amount * price,
-            "Whitelist: incorrect sent value"
+            "Whitelist: incorrect value sent"
         );
-        restriction[msg.sender] += _amount;
+        allocation[msg.sender] += _amount;
         (uint256[] memory ids, uint256[] memory amounts) = getTokenId(_amount);
         IERC1155Upgradeable(tokenAddress).safeBatchTransferFrom(
             address(this),
@@ -69,7 +69,7 @@ contract CruzoWhiteList is Ownable, ERC1155Holder {
             amounts,
             ""
         );
-        emit BuyCommitted(msg.sender, _amount);
+        emit BuyCommitted(msg.sender, _amount, ids);
     }
 
     function getTokenId(uint256 _amount)
@@ -78,7 +78,7 @@ contract CruzoWhiteList is Ownable, ERC1155Holder {
     {
         uint256[] memory ids = new uint256[](_amount);
         uint256[] memory amounts = new uint256[](_amount);
-        require(currentId + _amount <= endId, "Whitelist: Not enough supply");
+        require(currentId + _amount <= endId, "Whitelist: not enough supply");
 
         for (uint256 i = 0; i < _amount; i++) {
             ids[i] = currentId;
