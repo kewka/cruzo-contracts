@@ -23,7 +23,8 @@ async function main() {
   const tx = await factory.create(
     "Cruzo",
     "CRZ",
-    "https://cruzo.cards/contract-metadata"
+    "https://cruzo.cards/contract-metadata",
+    false
   );
   const receipt: ContractReceipt = await tx.wait();
   const event = getEvent(receipt, "NewTokenCreated");
