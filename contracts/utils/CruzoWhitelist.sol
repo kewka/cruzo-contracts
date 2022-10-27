@@ -88,7 +88,7 @@ contract CruzoWhitelist is Ownable, ERC1155Holder {
         return (ids, amounts);
     }
 
-    function withdraw(address payable _to) external onlyOwner{
+    function withdraw(address payable _to) external onlyOwner {
         _to.transfer(address(this).balance);
     }
 }
