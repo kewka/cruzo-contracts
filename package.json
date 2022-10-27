@@ -47,6 +47,7 @@
     "deployToken": "npx hardhat run scripts/deploy/deployToken.ts",
     "deployVault": "npx hardhat run scripts/deploy/deployVault.ts",
     "deployWhitelist": "npx hardhat run scripts/deploy/deployWhitelist.ts",
+    "deployNftPass": "npx hardhat run scripts/deploy/deployNftPass.ts",
     "upgradeBeacon": "npx hardhat run scripts/upgrade/upgradeBeacon.ts",
     "upgradeMarket": "npx hardhat run scripts/upgrade/upgradeMarket.ts",
     "upgradeVault": "npx hardhat run scripts/upgrade/upgradeVault.ts",
