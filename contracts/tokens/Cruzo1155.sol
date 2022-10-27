@@ -121,28 +121,6 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
 
     /**
      *
-     * @notice Mint a specific token to `_to` address in `_amount` quantity
-     * @param _tokenId The token ID to be minted
-     * @param _amount - The amount of tokens to be minted
-     * @param _to - The to address to which the token is to be minted
-     * Requirements-
-     *     - Token ID must exist
-     */
-    function mintTo(
-        uint256 _tokenId,
-        uint256 _amount,
-        address _to,
-        bytes memory _data
-    ) public onlyCreator(_tokenId) returns (uint256) {
-        require(
-            creators[_tokenId] != address(0),
-            "token doesn't exist; try using `mintNewTo()`"
-        );
-        return _mintToken(_tokenId, _amount, _to, _data);
-    }
-
-    /**
-     *
      * @notice SET Uri Type from {DEFAULT,IPFS,ID}
      * @param _uriType - The uri type selected from {DEFAULT,IPFS,ID}
      */

@@ -207,18 +207,6 @@ describe("Testing Cruzo1155 Contract", () => {
     expect(await token.balanceOf(signers[1].address, 1)).equal(2);
   });
 
-  it("Check mintTo function", async () => {
-    await token.create(1, 1, signers[1].address, "", [], admin.address, 0);
-    await token.create(2, 1, signers[1].address, "", [], admin.address, 0);
-    await token.mintTo(1, 1, signers[1].address, []);
-    await token.mintTo(2, 1, signers[1].address, []);
-    expect(await token.balanceOf(signers[1].address, 1)).equal(2);
-    expect(await token.balanceOf(signers[1].address, 2)).equal(2);
-    await expect(
-      token.connect(signers[1]).mintTo(1, 1, signers[1].address, [])
-    ).revertedWith("ERC1155CruzoBase#onlyCreator: ONLY_CREATOR_ALLOWED");
-  });
-
   it("Should update balance and totalSupply on burn", async () => {
     await token.create(1, 1000, admin.address, "", [], admin.address, 0);
     expect(await token.totalSupply(1)).equal(1000);
